@@ -2,6 +2,7 @@ package com.beans;
 
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
+import org.junit.Test;
 
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -205,12 +206,37 @@ public class Patient implements WritableComparable<Patient> {
 
     public static void main(String[] args) {
 
-        Patient p = new Patient("1","2","3","1","1","4","5","6","7","1","1","1");
-        Patient new_p = new Patient();
 
-        new_p = p;
-        new_p.setAge("-");
-        System.out.println((new_p.getAge()+new_p.getGender()+new_p.getSgot()).equals("-36"));
+
+        Patient p = new Patient();
+        //System.out.println(p.Class_Equals("1111111111112"));
+        //int arr[] = {2,7,2,11,15};
+        //System.out.println((p.twoSum(arr,9))[0]+":"+(p.twoSum(arr,9))[1]);
+
 
     }
+    public boolean Class_Equals(String class_str){
+
+        //获得第一个is_class
+        char first = class_str.charAt(0);
+
+        //默认都是is_class相同
+        int flag = 1;
+        for(int i = 0 ; i < class_str.length(); i++){
+
+            //System.out.println(class_str.charAt(i)==first);
+            if(class_str.charAt(i)!=first){
+                flag = 0;
+                break;
+            }
+        }
+
+        //最终输出
+        if(flag==1){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 }

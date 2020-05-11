@@ -9,6 +9,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.util.HashSet;
 
 public class XGDriver {
 
@@ -32,7 +33,7 @@ public class XGDriver {
         job.setMapOutputValueClass(Text.class);
 
         //5.设置最终数据输出的key和value类型
-        job.setOutputKeyClass(Patient.class);
+        job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
         //6.设置输入路径和输出路径lib包

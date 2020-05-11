@@ -45,6 +45,65 @@ public class XGMapper extends Mapper<LongWritable, Text, Patient, Text> {
         String a_g = atrr[10];
         String is_class = atrr[11];
 
+        //初始化对象
+        Copy_Patient(p,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_age,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_gender,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_tb,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_db,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_alkphos,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_sgpt,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_sgot,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_tp,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_alb,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        Copy_Patient(p_a_g,name,age,gender,tb,db,alkphos,sgpt,sgot,tp,alb,a_g,is_class);
+        //输出原本P
+        map_value.set(p.getIs_class());
+        context.write(p,map_value);
+
+        //输出p_age
+        p_age.setAge("-");
+        Write_Patient(p_age,context);
+
+        //输出p_gender
+        p_gender.setGender("-");
+        Write_Patient(p_gender,context);
+
+        //输出p_tb
+        p_tb.setTb("-");
+        Write_Patient(p_tb,context);
+
+        //输出p_db
+        p_db.setDb("-");
+        Write_Patient(p_db,context);
+
+        //输出p_alkphos
+        p_alkphos.setAlkphos("-");
+        Write_Patient(p_alkphos,context);
+
+        //输出p_sgpt
+        p_sgpt.setSgpt("-");
+        Write_Patient(p_sgpt,context);
+
+        //输出p_sgot
+        p_sgot.setSgot("-");
+        Write_Patient(p_sgot,context);
+
+        //输出p_tp
+        p_tp.setTp("-");
+        Write_Patient(p_tp,context);
+
+        //输出p_alb
+        p_alb.setAlb("-");
+        Write_Patient(p_alb,context);
+
+        //输出p_a_g
+        p_a_g.setA_g("-");
+        Write_Patient(p_a_g,context);
+    }
+
+    public void Copy_Patient(Patient p , String name ,String age ,String gender ,String tb,String db,String alkphos,String sgpt,String sgot,String tp,String alb ,String a_g,String is_class){
+
         p.setName(name);
         p.setAge(age);
         p.setGender(gender);
@@ -60,69 +119,13 @@ public class XGMapper extends Mapper<LongWritable, Text, Patient, Text> {
 
         //输出原本P
         p.setFlag();
+    }
+
+    public void Write_Patient(Patient p,Context context) throws IOException, InterruptedException {
+
+        p.setFlag();
         map_value.set(p.getIs_class());
         context.write(p,map_value);
 
-        //输出p-age
-        p_age = p;
-        p_age.setAge("-");
-        p_age.setFlag();
-        context.write(p_age,new Text(p_age.getIs_class()));
-
-        //输出p-gender
-        p_gender = p;
-        p_gender.setGender("-");
-        p_gender.setFlag();
-        context.write(p_gender,new Text(p_gender.getIs_class()));
-
-        //输出p-tb
-        p_tb = p;
-        p_tb.setTb("-");
-        p_tb.setFlag();
-        context.write(p_tb,new Text(p_tb.getIs_class()));
-
-        //输出p-db
-        p_db = p;
-        p_db.setDb("-");
-        p_db.setFlag();
-        context.write(p_db,new Text(p_db.getIs_class()));
-
-        //输出p-alkphos
-        p_alkphos = p;
-        p_alkphos.setAlkphos("-");
-        p_alkphos.setFlag();
-        context.write(p_alkphos,new Text(p_alkphos.getIs_class()));
-
-        //输出p-sgpt
-        p_sgpt = p;
-        p_sgpt.setSgpt("-");
-        p_sgpt.setFlag();
-        context.write(p_sgpt,new Text(p_sgpt.getIs_class()));
-
-        //输出p-sgot
-        p_sgot = p;
-        p_sgot.setSgot("-");
-        p_sgot.setFlag();
-        context.write(p_sgot,new Text(p_sgot.getIs_class()));
-
-        //输出p-tp
-        p_tp = p;
-        p_tp.setTp("-");
-        p_tp.setFlag();
-        context.write(p_tp,new Text(p_tp.getIs_class()));
-
-        //输出p-alb
-        p_alb = p;
-        p_alb.setAlb("-");
-        p_alb.setFlag();
-        context.write(p_alb,new Text(p_alb.getIs_class()));
-
-        //输出p-a_g
-        p_a_g = p;
-        p_a_g.setA_g("-");
-        p_a_g.setFlag();
-        context.write(p_a_g,new Text(p_a_g.getIs_class()));
-
     }
-
 }
