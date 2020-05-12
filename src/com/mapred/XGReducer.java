@@ -31,6 +31,8 @@ public class XGReducer extends Reducer<Patient, Text, Text,Text> {
             return o2-o1;
         }
     });
+    Map<Integer,String> setNameMap = new HashMap<Integer, String>();
+
     @Override
     /*
     *   每一个key 根据compareTo来判断是否是同一个key ,遍历相同的key相同就会把 value 放到 Iterable vaLue里面去,然后调用reduce方法
@@ -131,6 +133,15 @@ public class XGReducer extends Reducer<Patient, Text, Text,Text> {
         sortMap.put(p_alb_set.size(),p_alb_set);
         sortMap.put(p_a_g_set.size(),p_a_g_set);
 
+        setNameMap.put(p_a_g_set.size(),"A_G");
+        setNameMap.put(p_alb_set.size(),"ALB");
+        setNameMap.put(p_tp_set.size(),"TP");
+        setNameMap.put(p_sgot_set.size(),"sgot");
+        setNameMap.put(p_sgpt_set.size(),"sgpt");
+        setNameMap.put(p_db_set.size(),"DB");
+        setNameMap.put(p_tb_set.size(),"TB");
+
+
         HashSet<String> set_flag = new HashSet<String>();
         for(Map.Entry<Integer,HashSet> entry:sortMap.entrySet()){
 
@@ -139,31 +150,80 @@ public class XGReducer extends Reducer<Patient, Text, Text,Text> {
             }else {
                 HashSet set = entry.getValue();
                 set_flag = CombineSet(set_flag,set);
-                context.write(new Text("set_size:"),new Text(String.valueOf(set_flag.size())));
+                context.write(new Text("核属性为:"),new Text(String.valueOf(setNameMap.get(set.size()))));
+                context.write(new Text("set_size:"),new Text(String.valueOf(set.size()+":"+set_flag.size())));
                 context.write(new Text("set_flag:"),new Text(String.valueOf(CompareSet(p_set,set_flag))));
             }
         }
 
-        /*
-        //sgpt db 相加 然后对比set
-        HashSet<String> set_sgpt_db = CombineSet(p_sgpt_set,p_db_set);
-        context.write(new Text("set_sgpt_db:"),new Text(String.valueOf(set_sgpt_db.size())));
-        context.write(new Text("sgpt_db:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db))));
+        //HashSet<String> set_flag_age= CombineSet(set_flag,p_age_set);
+        context.write(new Text("set_flag_age:"),new Text(String.valueOf(set_flag.size())));
+        context.write(new Text("set_flag_age:"),new Text(String.valueOf(CompareSet(p_set,set_flag))));
 
-        //这里又加上了alb 集合已经大于 原来的正域
-        HashSet<String> set_sgpt_db_alb = CombineSet(set_sgpt_db,p_alb_set);
+        context.write(new Text("set_flag_gender:"),new Text(String.valueOf(set_flag.size())));
+        context.write(new Text("set_flag_gender:"),new Text(String.valueOf(CompareSet(p_set,set_flag))));
+/*
+        //a_g tb 相加 然后对比set
+        HashSet<String> set_a_g_tb= CombineSet(p_a_g_set,p_tb_set);
+        context.write(new Text("set_a_g_tb:"),new Text(String.valueOf(set_a_g_tb.size())));
+        context.write(new Text("set_a_g_tb:"),new Text(String.valueOf(CompareSet(p_set,set_a_g_tb))));
+
+        //这里又加上了sgot 集合已经大于 原来的正域
+        HashSet<String> set_sgpt_db_alb_sgot = CombineSet(set_a_g_tb,p_sgot_set);
+        context.write(new Text("set_sgpt_db_alb_sgot:"),new Text(String.valueOf(set_sgpt_db_alb_sgot.size())));
+        context.write(new Text("set_sgpt_db_alb_sgot:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb_sgot))));
+
+        //加上性别
+        HashSet<String> set_sgpt_db_alb_sgot_gender = CombineSet(set_sgpt_db_alb_sgot,p_gender_set);
+        context.write(new Text("set_sgpt_db_alb_sgot_gender:"),new Text(String.valueOf(set_sgpt_db_alb_sgot_gender.size())));
+        context.write(new Text("set_sgpt_db_alb_sgot_gender:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb_sgot_gender))));
+
+        //加上年龄
+        HashSet<String> set_sgpt_db_alb_sgot_gender_age = CombineSet(set_sgpt_db_alb_sgot_gender,p_age_set);
+        context.write(new Text("set_sgpt_db_alb_sgot_gender_age:"),new Text(String.valueOf(set_sgpt_db_alb_sgot_gender_age.size())));
+        context.write(new Text("set_sgpt_db_alb_sgot_gender_age:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb_sgot_gender_age))));
+*/
+/*
+        //tb db相加 然后对比set
+        HashSet<String> set_alb_db= CombineSet(p_alb_set,p_db_set);
+        context.write(new Text("set_alb_db:"),new Text(String.valueOf(set_alb_db.size())));
+        context.write(new Text("set_alb_db:"),new Text(String.valueOf(CompareSet(p_set,set_alb_db))));
+
+        //这里又加上了sgpt 集合已经大于 原来的正域
+        HashSet<String> set_sgpt_db_alb = CombineSet(set_alb_db,p_sgpt_set);
         context.write(new Text("set_sgpt_db_alb:"),new Text(String.valueOf(set_sgpt_db_alb.size())));
-        context.write(new Text("sgpt_db_alb:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb))));
+        context.write(new Text("set_sgpt_db_alb:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb))));
 
         //加上性别
         HashSet<String> set_sgpt_db_alb_gender = CombineSet(set_sgpt_db_alb,p_gender_set);
         context.write(new Text("set_sgpt_db_alb_gender:"),new Text(String.valueOf(set_sgpt_db_alb_gender.size())));
-        context.write(new Text("sgpt_db_alb_gender:"),new Text(String.valueOf(CompareSet(set_sgpt_db_alb_gender,set_sgpt_db_alb))));
+        context.write(new Text("set_sgpt_db_alb_gender:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb_gender))));
 
         //加上年龄
-        HashSet<String> set_sgpt_db_alb_gender_age = CombineSet(set_sgpt_db_alb_gender,p_gender_set);
+        HashSet<String> set_sgpt_db_alb_gender_age = CombineSet(set_sgpt_db_alb,p_age_set);
         context.write(new Text("set_sgpt_db_alb_gender_age:"),new Text(String.valueOf(set_sgpt_db_alb_gender_age.size())));
-        context.write(new Text("sgpt_db_alb_gender_age:"),new Text(String.valueOf(CompareSet(set_sgpt_db_alb,set_sgpt_db_alb_gender_age))));
+        context.write(new Text("set_sgpt_db_alb_gender_age:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_alb_gender_age))));
+*/
+/*
+        //tp alb a_g相加 然后对比set
+        HashSet<String> set_tb_db= CombineSet(p_tb_set,p_db_set);
+        context.write(new Text("set_tb_db:"),new Text(String.valueOf(set_tb_db.size())));
+        context.write(new Text("set_tb_db:"),new Text(String.valueOf(CompareSet(p_set,set_tb_db))));
+
+        //tp alb a_g相加 然后对比set
+        HashSet<String> set_sgpt_db_tb = CombineSet(set_tb_db,p_sgpt_set);
+        context.write(new Text("set_sgpt_db_tb:"),new Text(String.valueOf(set_sgpt_db_tb.size())));
+        context.write(new Text("set_sgpt_db_tb:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_tb))));
+
+        //加上性别
+        HashSet<String> set_sgpt_db_tb_gender = CombineSet(set_sgpt_db_tb,p_gender_set);
+        context.write(new Text("set_sgpt_db_tb_gender:"),new Text(String.valueOf(set_sgpt_db_tb_gender.size())));
+        context.write(new Text("set_sgpt_db_tb_gender:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_tb_gender))));
+
+        //加上年龄
+        HashSet<String> set_sgpt_db_tb_gender_age = CombineSet(set_sgpt_db_tb_gender,p_age_set);
+        context.write(new Text("set_sgpt_db_tb_gender_age:"),new Text(String.valueOf(set_sgpt_db_tb_gender_age.size())));
+        context.write(new Text("set_sgpt_db_tb_gender_age:"),new Text(String.valueOf(CompareSet(p_set,set_sgpt_db_tb_gender_age))));
         */
     }
 
